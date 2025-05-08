@@ -33,7 +33,7 @@ const updateCategory = async (id, { name, color }) => {
     return result.rowsAffected[0];
 };
 
-const deleteProduct = async (id) => {
+const deleteCategory = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
@@ -41,4 +41,4 @@ const deleteProduct = async (id) => {
     return result.rowsAffected[0];
 };
 
-export{getAllCategories, getCategoryById, createCategory, updateCategory, deleteProduct};
+export{getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory};

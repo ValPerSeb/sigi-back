@@ -14,13 +14,13 @@ const productDetails = async (req, res) => {
         const { id } = req.params;
 
         if (!id) {
-            return res.status(400).json({ message: "El Id del producto es obligatorio" });
+            return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
         const product = await getProductById(id);
 
         if (!product) {
-            return res.status(404).json({ message: "Producto no encontrado" });
+            return res.status(404).json({ message: "Producto no existe" });
         }
         
         res.status(200).json(product);
@@ -33,10 +33,10 @@ const addProduct = async (req, res) => {
     try {
         const { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
         if ( !name || !price || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios" });
+            return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
         await createProduct({ name, price, stock, companyId, supplierId, categoryId, inventoryLocationId });
-        res.status(200).json({ message: "Producto creado exitosamente" });
+        res.status(200).json({ message: "Creación existosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -48,20 +48,20 @@ const editProduct = async (req, res) => {
         const { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
 
         if (!id) {
-            return res.status(400).json({ message: "El Id del producto es obligatorio" });
+            return res.status(400).json({ message: "El Id obligatorio" });
         }
 
         if (!name || !price || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios" });
+            return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
         const affectedRows = await updateProduct(id, { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId });
 
         if (affectedRows === 0) {
-            return res.status(404).json({ message: "Producto no encontrado para actualizar" });
+            return res.status(404).json({ message: "Producto no existe" });
         }
 
-        res.status(200).json({ message: "Producto actualizado exitosamente" });
+        res.status(200).json({ message: "Actualización existosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -72,16 +72,16 @@ const removeProduct = async (req, res) => {
         const { id } = req.params;
 
         if (!id) {
-            return res.status(400).json({ message: "El Id del producto es obligatorio" });
+            return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
         const affectedRows = await deleteProduct(id);
 
         if (affectedRows === 0) {
-            return res.status(404).json({ message: "Producto no encontrado para eliminar" });
+            return res.status(404).json({ message: "Producto no existe" });
         }
 
-        res.status(200).json({ message: "Producto eliminado exitosamente" });
+        res.status(200).json({ message: "Eliminación existosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
