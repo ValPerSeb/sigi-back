@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/product', productRoutes);
+app.use('/products', productRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running in port: ${process.env.PORT}`);
