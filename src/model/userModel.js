@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllUsers = async ()=>{
     const pool = await getConnection;
@@ -16,7 +17,9 @@ const getUserInfobyId = async (id) => {
 
 const createUserInfo = async ({ firstName, middleName, lastName, secondLastName, dateOfBirth, idType, idNumber, contactInfoId }) => {
     const pool = await getConnection;
+    const id = generateId('USE');
     const result = await pool.request()
+        .input("id", id)
         .input("firstName", firstName)
         .input("middleName", middleName)
         .input("lastName", lastName)
@@ -25,7 +28,7 @@ const createUserInfo = async ({ firstName, middleName, lastName, secondLastName,
         .input("idType", idType)
         .input("idNumber", idNumber)
         .input("contactInfoId", contactInfoId)
-        .query("INSERT INTO UserInfo (FirstName, MiddleName, LastName, SecondLastName, DateOfBirth, IdType, IdNumber, ContactInfoId) VALUES (@firstName, @middleName, @lastName, @secondLastName, @dateOfBirth, @idType, @idNumber, @contactInfoId)");
+        .query("INSERT INTO UserInfo (UserInfoId, FirstName, MiddleName, LastName, SecondLastName, DateOfBirth, IdType, IdNumber, ContactInfoId) VALUES (@id, @firstName, @middleName, @lastName, @secondLastName, @dateOfBirth, @idType, @idNumber, @contactInfoId)");
     return result;
 };
 

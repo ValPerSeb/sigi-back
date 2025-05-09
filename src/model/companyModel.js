@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllCompanies = async ()=>{
     const pool = await getConnection;
@@ -16,7 +17,9 @@ const getCompanyById = async (id) => {
 
 const createCompany = async ({ name, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
     const pool = await getConnection;
+    const id = generateId('COM');
     const result = await pool.request()
+        .input("id", id)
         .input("name", name)
         .input("nit", nit)
         .input("website", website)
@@ -25,7 +28,7 @@ const createCompany = async ({ name, nit, website, industryType, legalRep, logo,
         .input("logo", logo)
         .input("contactInfoId", contactInfoId)
         .input("locationId", locationId)
-        .query("INSERT INTO Company (CompanyName, Nit, Website, IndustryType, LegalRep, Logo, ContactInfoId, LocationId) VALUES (@name, @nit, @website, @industryType, @legalRep, @logo, @contactInfoId, @locationId)");
+        .query("INSERT INTO Company (CompanyId, CompanyName, Nit, Website, IndustryType, LegalRep, Logo, ContactInfoId, LocationId) VALUES (@id, @name, @nit, @website, @industryType, @legalRep, @logo, @contactInfoId, @locationId)");
     return result;
 };
 

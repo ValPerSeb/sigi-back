@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllInventoryLocations = async ()=>{
     const pool = await getConnection;
@@ -16,13 +17,15 @@ const getInventoryLocationById = async (id) => {
 
 const createInventoryLocation = async ({ code, name, capacity, currentStock, isActive}) => {
     const pool = await getConnection;
+    const id = generateId('INV');
     const result = await pool.request()
+        .input("id", id)
         .input("code", code)
         .input("name", name)
         .input("capacity", capacity)
         .input("currentStock", currentStock)
         .input("isActive", isActive)
-        .query("INSERT INTO InventoryLocation (LocationCode, LocationName, Capacity, CurrentStock, IsActive) VALUES (@code, @name, @capacity, @currentStock, @isActive)");
+        .query("INSERT INTO InventoryLocation (InventoryLocationId, LocationCode, LocationName, Capacity, CurrentStock, IsActive) VALUES (@id, @code, @name, @capacity, @currentStock, @isActive)");
     return result;
 };
 

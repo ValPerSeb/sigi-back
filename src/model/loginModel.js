@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getLoginByUserName = async (userName) => {
     const pool = await getConnection;
@@ -10,13 +11,15 @@ const getLoginByUserName = async (userName) => {
 
 const createLogin = async ({ userName, password, rol, userInfoId, companyId }) => {
     const pool = await getConnection;
+    const id = generateId('LOG'); 
     const result = await pool.request()
+        .input("id", id)
         .input("userName", userName)
         .input("password", password)
         .input("rol", rol)
         .input("userInfoId", userInfoId)
         .input("companyId", companyId)
-        .query("INSERT INTO Login (UserName, Password, Rol, UserInfoId, CompanyId) VALUES (@userName, @password, @rol, @userInfoId, @companyId)");
+        .query("INSERT INTO Login (LoginId, UserName, Password, Rol, UserInfoId, CompanyId) VALUES (@id, @userName, @password, @rol, @userInfoId, @companyId)");
     return result;
 };
 

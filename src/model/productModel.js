@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllProducts = async ()=>{
     const pool = await getConnection;
@@ -16,7 +17,9 @@ const getProductById = async (id) => {
 
 const createProduct = async ({ productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId }) => {
     const pool = await getConnection;
+    const id = generateId('PRO'); 
     const result = await pool.request()
+        .input("id", id)
         .input("productName", productName)
         .input("unitPrice", unitPrice)
         .input("stock", stock)
@@ -24,7 +27,7 @@ const createProduct = async ({ productName, unitPrice, stock, companyId, supplie
         .input("supplierId", supplierId)
         .input("categoryId", categoryId)
         .input("inventoryLocationId", inventoryLocationId)
-        .query("INSERT INTO Product (ProductName, UnitPrice, Stock, CompanyId, SupplierId, CategoryId, InventoryLocationId) VALUES (@productName, @unitPrice, @stock, @companyId, @supplierId, @categoryId, @inventoryLocationId)");
+        .query("INSERT INTO Product (ProductId, ProductName, UnitPrice, Stock, CompanyId, SupplierId, CategoryId, InventoryLocationId) VALUES (@id, @productName, @unitPrice, @stock, @companyId, @supplierId, @categoryId, @inventoryLocationId)");
     return result;
 };
 

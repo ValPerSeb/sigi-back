@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllCategories = async ()=>{
     const pool = await getConnection;
@@ -16,10 +17,12 @@ const getCategoryById = async (id) => {
 
 const createCategory = async ({ name, color }) => {
     const pool = await getConnection;
+    const id = generateId('CAT'); 
     const result = await pool.request()
+        .input("id", id)
         .input("name", name)
         .input("color", color)
-        .query("INSERT INTO Category (CategoryName, CategoryColor) VALUES (@name, @color)");
+        .query("INSERT INTO Category (CategoryId, CategoryName, CategoryColor) VALUES (@id, @name, @color)");
     return result;
 };
 

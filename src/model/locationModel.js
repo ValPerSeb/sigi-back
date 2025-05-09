@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getLocationById = async (id) => {
     const pool = await getConnection;
@@ -10,13 +11,15 @@ const getLocationById = async (id) => {
 
 const createLocation = async ({ addressUno, addressDos, postalCode, city, country }) => {
     const pool = await getConnection;
+    const id = generateId('LOC');
     const result = await pool.request()
+        .input("id", id)
         .input("addressUno", addressUno)
         .input("addressDos", addressDos)
         .input("postalCode", postalCode)
         .input("city", city)
         .input("country", country)
-        .query("INSERT INTO Location (AddressUno, AddressDos, PostalCode, City, Country) VALUES (@addressUno, @addressDos, @postalCode, @city, @country)");
+        .query("INSERT INTO Location (LocationId, AddressUno, AddressDos, PostalCode, City, Country) VALUES (@id, @addressUno, @addressDos, @postalCode, @city, @country)");
     return result;
 };
 

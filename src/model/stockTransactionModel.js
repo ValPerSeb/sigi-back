@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllTransactions = async ()=>{
     const pool = await getConnection;
@@ -16,7 +17,9 @@ const getTransactionById = async (id) => {
 
 const createTransaction = async ({ date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, productName, userName, companyId }) => {
     const pool = await getConnection;
+    const id = generateId('STO'); 
     const result = await pool.request()
+        .input("id", id)
         .input("date", date)
         .input("transactionType", transactionType)
         .input("quantityChange", quantityChange)
@@ -26,7 +29,7 @@ const createTransaction = async ({ date, transactionType, quantityChange, descri
         .input("productName", productName)
         .input("userName", userName)
         .input("companyId", companyId)
-        .query("INSERT INTO StockTransaction (Date, TransactionType, QuantityChange, Description, InventoryLocationIdOld, InventoryLocationIdNew, ProductName, UserName, CompanyId) VALUES (@date, @transactionType, @quantityChange, @description, @inventoryLocationIdOld, @inventoryLocationIdNew, @productName, @userName, @companyId)");
+        .query("INSERT INTO StockTransaction (StockTransactionId, Date, TransactionType, QuantityChange, Description, InventoryLocationIdOld, InventoryLocationIdNew, ProductName, UserName, CompanyId) VALUES (@id, @date, @transactionType, @quantityChange, @description, @inventoryLocationIdOld, @inventoryLocationIdNew, @productName, @userName, @companyId)");
     return result;
 };
 

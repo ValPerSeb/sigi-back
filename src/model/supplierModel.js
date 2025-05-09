@@ -1,4 +1,5 @@
 import { getConnection } from "../config/db.js";
+import { generateId } from "../utils/generateId.js";
 
 const getAllSuppliers = async ()=>{
     const pool = await getConnection;
@@ -16,12 +17,14 @@ const getSupplierById = async (id) => {
 
 const createSupplier = async ({ name, companyId, contactInfoId, locationId }) => {
     const pool = await getConnection;
+    const id = generateId('SUP'); 
     const result = await pool.request()
+        .input("id", id)
         .input("name", name)
         .input("companyId", companyId)
         .input("contactInfoId", contactInfoId)
         .input("locationId", locationId)
-        .query("INSERT INTO Supplier (Name, CompanyId, ContactInfoId, LocationId) VALUES (@name, @companyId, @contactInfoId, @locationId)");
+        .query("INSERT INTO Supplier (SupplierId, Name, CompanyId, ContactInfoId, LocationId) VALUES (@id, @name, @companyId, @contactInfoId, @locationId)");
     return result;
 };
 
