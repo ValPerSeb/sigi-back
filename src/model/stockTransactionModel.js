@@ -14,7 +14,7 @@ const getTransactionById = async (id) => {
     return result.recordset[0];
 };
 
-const createTransaction = async ({ date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, loginId, productId }) => {
+const createTransaction = async ({ date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, productName, userName, companyId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("date", date)
@@ -23,13 +23,14 @@ const createTransaction = async ({ date, transactionType, quantityChange, descri
         .input("description", description)
         .input("inventoryLocationIdOld", inventoryLocationIdOld)
         .input("inventoryLocationIdNew", inventoryLocationIdNew)
-        .input("loginId", loginId)
-        .input("productId", productId)
-        .query("INSERT INTO StockTransaction (Date, TransactionType, QuantityChange, Description, InventoryLocationIdOld, InventoryLocationIdNew, LoginId, ProductId) VALUES (@date, @transactionType, @quantityChange, @description, @inventoryLocationIdOld, @inventoryLocationIdNew, @loginId, @productId)");
+        .input("productName", productName)
+        .input("userName", userName)
+        .input("companyId", companyId)
+        .query("INSERT INTO StockTransaction (Date, TransactionType, QuantityChange, Description, InventoryLocationIdOld, InventoryLocationIdNew, ProductName, UserName, CompanyId) VALUES (@date, @transactionType, @quantityChange, @description, @inventoryLocationIdOld, @inventoryLocationIdNew, @productName, @userName, @companyId)");
     return result;
 };
 
-const updateTransaction = async (id, { date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, loginId, productId }) => {
+const updateTransaction = async (id, { date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, productName, userName, companyId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
@@ -39,9 +40,10 @@ const updateTransaction = async (id, { date, transactionType, quantityChange, de
         .input("description", description)
         .input("inventoryLocationIdOld", inventoryLocationIdOld)
         .input("inventoryLocationIdNew", inventoryLocationIdNew)
-        .input("loginId", loginId)
-        .input("productId", productId)
-        .query("UPDATE StockTransaction SET Date = @date, TransactionType = @transactionType, QuantityChange = @quantityChange, Description = @description, InventoryLocationIdOld = @inventoryLocationIdOld, InventoryLocationIdNew = @inventoryLocationIdNew, LoginId = @loginId, ProductId = @productId WHERE TransactionId = @id");
+        .input("productName", productName)
+        .input("userName", userName)
+        .input("companyId", companyId)
+        .query("UPDATE StockTransaction SET Date = @date, TransactionType = @transactionType, QuantityChange = @quantityChange, Description = @description, InventoryLocationIdOld = @inventoryLocationIdOld, InventoryLocationIdNew = @inventoryLocationIdNew, ProductName = @productName, UserName = @userName, CompanyId = @companyId WHERE TransactionId = @id");
     return result.rowsAffected[0];
 };
 

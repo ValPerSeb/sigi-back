@@ -38,11 +38,12 @@ const addTransaction = async (req, res) => {
             description,
             inventoryLocationIdOld,
             inventoryLocationIdNew,
-            loginId,
-            productId
+            productName,
+            userName,
+            companyId
         } = req.body;
 
-        if (!date || !transactionType || !quantityChange || !loginId || !productId) {
+        if (!date || !transactionType || !quantityChange || !productName || !userName || !companyId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
@@ -53,8 +54,9 @@ const addTransaction = async (req, res) => {
             description,
             inventoryLocationIdOld,
             inventoryLocationIdNew,
-            loginId,
-            productId
+            productName,
+            userName,
+            companyId
         });
 
         res.status(200).json({ message: "Transacción creada exitosamente" });
@@ -73,15 +75,16 @@ const editTransaction = async (req, res) => {
             description,
             inventoryLocationIdOld,
             inventoryLocationIdNew,
-            loginId,
-            productId
+            productName,
+            userName,
+            companyId
         } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!date || !transactionType || !quantityChange || !loginId || !productId) {
+        if (!date || !transactionType || !quantityChange || !productName || !userName || !companyId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
@@ -92,8 +95,9 @@ const editTransaction = async (req, res) => {
             description,
             inventoryLocationIdOld,
             inventoryLocationIdNew,
-            loginId,
-            productId
+            productName,
+            userName,
+            companyId
         });
 
         if (updated === 0) {

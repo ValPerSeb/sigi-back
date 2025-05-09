@@ -31,11 +31,11 @@ const productDetails = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
-        if ( !name || !price || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
+        const { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
+        if (!productName || !unitPrice || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
-        await createProduct({ name, price, stock, companyId, supplierId, categoryId, inventoryLocationId });
+        await createProduct({ productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId });
         res.status(200).json({ message: "Creación existosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -45,17 +45,17 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
+        const { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id obligatorio" });
         }
 
-        if (!name || !price || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
+        if (!productName || !unitPrice || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId ) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const affectedRows = await updateProduct(id, { name, price, stock, companyId, supplierId, categoryId, inventoryLocationId });
+        const affectedRows = await updateProduct(id, { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId });
 
         if (affectedRows === 0) {
             return res.status(404).json({ message: "Producto no existe" });
