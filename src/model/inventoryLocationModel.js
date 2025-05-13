@@ -1,10 +1,36 @@
 import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
-const getAllInventoryLocations = async ()=>{
+const getAllInventoryLocations = async ({ searchBy, searchValue, page, limit })=>{
     const pool = await getConnection;
-    const result = await pool.request().query('SELECT * FROM InventoryLocation');
-    return result.recordset;
+    const offset = (page - 1) * limit;
+
+let query = 'SELECT * FROM InventoryLocation';
+    let countQuery = 'SELECT COUNT(*) AS total FROM InventoryLocation';
+    const request = pool.request();
+
+    if (searchBy && searchValue) {
+        const allowedFields = ['LocationName', 'IsActive'];
+        if (!allowedFields.includes(searchBy)) {
+            throw new Error('Campo de búsqueda no permitido');
+        }
+
+        query += ` WHERE ${searchBy} LIKE @searchValue`;
+        countQuery += ` WHERE ${searchBy} LIKE @searchValue`;
+        request.input('searchValue', sql.VarChar, `%${searchValue}%`);
+    }
+
+    query += ` ORDER BY InventoryLocationId OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`;
+
+    const result = await request.query(query);
+    const countResult = await request.query(countQuery);
+
+    return {
+        data: result.recordset,
+        total: countResult.recordset[0].total,
+        page: Number(page),
+        limit: Number(limit)
+    };
 }
 
 const getInventoryLocationById = async (id) => {

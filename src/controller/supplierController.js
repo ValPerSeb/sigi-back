@@ -2,7 +2,8 @@ import { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, delet
 
 const listSuppliers = async (req, res) => {
     try {
-        const suppliers = await getAllSuppliers();
+        const { searchBy = '', searchValue = '', page = 1, limit = 10 } = req.query;
+        const suppliers = await getAllSuppliers({ searchBy, searchValue, page, limit });
         res.status(200).json(suppliers);
     } catch (error) {
         res.status(500).json({ message: error.message });

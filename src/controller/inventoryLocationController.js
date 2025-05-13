@@ -2,7 +2,8 @@ import { getAllInventoryLocations, getInventoryLocationById, createInventoryLoca
 
 const inventoryLocationList = async (req, res) => {
     try {
-        const locations = await getAllInventoryLocations();
+        const { searchBy = '', searchValue = '', page = 1, limit = 10 } = req.query;
+        const locations = await getAllInventoryLocations({ searchBy, searchValue, page, limit });
         res.status(200).json(locations);
     } catch (error) {
         res.status(500).json({ message: error.message });

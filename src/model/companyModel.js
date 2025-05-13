@@ -2,11 +2,38 @@ import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 import { sql } from "../config/db.js";
 
-const getAllCompanies = async ()=>{
+const getAllCompanies = async ({ searchBy, searchValue, page, limit }) => {
     const pool = await getConnection;
-    const result = await pool.request().query('SELECT * FROM Company');
-    return result.recordset;
+    const offset = (page - 1) * limit;
+
+    let query = 'SELECT * FROM Company';
+    let countQuery = 'SELECT COUNT(*) AS total FROM Company';
+    const request = pool.request();
+
+    if (searchBy && searchValue) {
+        const allowedFields = ['CompanyName'];
+        if (!allowedFields.includes(searchBy)) {
+            throw new Error('Campo de búsqueda no permitido');
+        }
+
+        query += ` WHERE ${searchBy} LIKE @searchValue`;
+        countQuery += ` WHERE ${searchBy} LIKE @searchValue`;
+        request.input('searchValue', sql.VarChar, `%${searchValue}%`);
+    }
+
+    query += ` ORDER BY CompanyId OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`;
+
+    const result = await request.query(query);
+    const countResult = await request.query(countQuery);
+
+    return {
+        data: result.recordset,
+        total: countResult.recordset[0].total,
+        page: Number(page),
+        limit: Number(limit)
+    };
 }
+
 
 const getCompanyById = async (id) => {
     const pool = await getConnection;
@@ -57,4 +84,4 @@ const deleteCompany = async (id) => {
     return result.recordset[0];
 };
 
-export{getAllCompanies, getCompanyById, createCompany, updateCompany, deleteCompany};
+export { getAllCompanies, getCompanyById, createCompany, updateCompany, deleteCompany };

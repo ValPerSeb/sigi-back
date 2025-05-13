@@ -2,7 +2,8 @@ import { getAllCategories, getCategoryById, createCategory, updateCategory, dele
 
 const categoryList = async (req, res) => {
     try {
-        const categories = await getAllCategories();
+        const { searchBy = '', searchValue = '', page = 1, limit = 10 } = req.query;
+        const categories = await getAllCategories({ searchBy, searchValue, page, limit });
         res.status(200).json(categories);
     } catch (error) {
         res.status(500).json({ message: error.message });
