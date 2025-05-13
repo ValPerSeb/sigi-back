@@ -2,7 +2,8 @@ import { getAllProducts, getProductById, createProduct, updateProduct, deletePro
 
 const productList = async (req, res) => {
     try {
-        const products = await getAllProducts();
+        const { searchBy = '', searchValue = '', page = 1, limit = 10 } = req.query;
+        const products = await getAllProducts({ searchBy, searchValue, page, limit });
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });

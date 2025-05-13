@@ -1,4 +1,4 @@
-import { getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo } from "../model/userInfoModel.js";
+import { getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo } from "../model/userModel.js";
 
 const listUsers = async (req, res) => {
     try {

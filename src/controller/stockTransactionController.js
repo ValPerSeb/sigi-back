@@ -1,4 +1,4 @@
-import { getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction } from "../model/transactionModel.js";
+import { getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction } from "../model/stockTransactionModel.js";
 
 const listTransactions = async (req, res) => {
     try {
