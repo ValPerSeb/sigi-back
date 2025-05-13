@@ -37,9 +37,13 @@ const addSupplier = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        await createSupplier({ name, companyId, contactInfoId, locationId });
+        const response = await createSupplier({ name, companyId, contactInfoId, locationId });
 
-        res.status(200).json({ message: "Proveedor creado exitosamente" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -58,13 +62,13 @@ const editSupplier = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const updated = await updateSupplier(id, { name, companyId, contactInfoId, locationId });
+        const response = await updateSupplier(id, { name, companyId, contactInfoId, locationId });
 
-        if (updated === 0) {
-            return res.status(404).json({ message: "Proveedor no encontrado" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Actualización exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -78,13 +82,13 @@ const removeSupplier = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const deleted = await deleteSupplier(id);
+        const response = await deleteSupplier(id);
 
-        if (deleted === 0) {
-            return res.status(404).json({ message: "Proveedor no encontrado" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Eliminación exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

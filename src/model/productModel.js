@@ -1,5 +1,6 @@
 import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
+import { sql } from "../config/db.js";
 
 const getAllProducts = async ()=>{
     const pool = await getConnection;
@@ -19,39 +20,39 @@ const createProduct = async ({ productName, unitPrice, stock, companyId, supplie
     const pool = await getConnection;
     const id = generateId('PRO'); 
     const result = await pool.request()
-        .input("id", id)
-        .input("productName", productName)
-        .input("unitPrice", unitPrice)
-        .input("stock", stock)
-        .input("companyId", companyId)
-        .input("supplierId", supplierId)
-        .input("categoryId", categoryId)
-        .input("inventoryLocationId", inventoryLocationId)
-        .query("INSERT INTO Product (ProductId, ProductName, UnitPrice, Stock, CompanyId, SupplierId, CategoryId, InventoryLocationId) VALUES (@id, @productName, @unitPrice, @stock, @companyId, @supplierId, @categoryId, @inventoryLocationId)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("productName", sql.VarChar(30), productName)
+        .input("unitPrice", sql.Float, unitPrice)
+        .input("stock", sql.Int, stock)
+        .input("companyId", sql.VarChar(25), companyId)
+        .input("supplierId", sql.VarChar(25), supplierId)
+        .input("categoryId", sql.VarChar(25), categoryId)
+        .input("inventoryLocationId", sql.VarChar(25), inventoryLocationId)
+        .execute("CreateProduct");
+    return result.recordset[0];
 };
 
 const updateProduct = async (id, { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId }) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("productName", productName)
-        .input("unitPrice", unitPrice)
-        .input("stock", stock)
-        .input("companyId", companyId)
-        .input("supplierId", supplierId)
-        .input("categoryId", categoryId)
-        .input("inventoryLocationId", inventoryLocationId)
-        .query("UPDATE Product SET ProductName = @productName, UnitPrice = @unitPrice, Stock = @stock, CompanyId = @companyId, SupplierId = @supplierId, CategoryId = @categoryId, InventoryLocationId = @inventoryLocationId WHERE ProductId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("productName", sql.VarChar(30), productName)
+        .input("unitPrice", sql.Float, unitPrice)
+        .input("stock", sql.Int, stock)
+        .input("companyId", sql.VarChar(25), companyId)
+        .input("supplierId", sql.VarChar(25), supplierId)
+        .input("categoryId", sql.VarChar(25), categoryId)
+        .input("inventoryLocationId", sql.VarChar(25), inventoryLocationId)
+        .execute("UpdateProduct");
+    return result.recordset[0];
 };
 
 const deleteProduct = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM Product WHERE ProductId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("DeleteProduct");
+    return result.recordset[0];
 };
 
 export{getAllProducts, getProductById, createProduct, updateProduct, deleteProduct};

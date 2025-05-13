@@ -1,5 +1,6 @@
 import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
+import { sql } from "../config/db.js";
 
 const getAllCompanies = async ()=>{
     const pool = await getConnection;
@@ -19,41 +20,41 @@ const createCompany = async ({ name, nit, website, industryType, legalRep, logo,
     const pool = await getConnection;
     const id = generateId('COM');
     const result = await pool.request()
-        .input("id", id)
-        .input("name", name)
-        .input("nit", nit)
-        .input("website", website)
-        .input("industryType", industryType)
-        .input("legalRep", legalRep)
-        .input("logo", logo)
-        .input("contactInfoId", contactInfoId)
-        .input("locationId", locationId)
-        .query("INSERT INTO Company (CompanyId, CompanyName, Nit, Website, IndustryType, LegalRep, Logo, ContactInfoId, LocationId) VALUES (@id, @name, @nit, @website, @industryType, @legalRep, @logo, @contactInfoId, @locationId)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("name", sql.VarChar(30), name)
+        .input("nit", sql.BigInt, nit)
+        .input("website", sql.VarChar(30), website)
+        .input("industryType", sql.VarChar(20), industryType)
+        .input("legalRep", sql.VarChar(30), legalRep)
+        .input("logo", sql.VarChar(200), logo)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .input("locationId", sql.VarChar(25), locationId)
+        .execute("CreateCompany");
+    return result.recordset[0];
 };
 
 const updateCompany = async (id, { name, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("name", name)
-        .input("nit", nit)
-        .input("website", website)
-        .input("industryType", industryType)
-        .input("legalRep", legalRep)
-        .input("logo", logo)
-        .input("contactInfoId", contactInfoId)
-        .input("locationId", locationId)
-        .query("UPDATE Company SET CompanyName = @name, Nit = @nit, Website = @website, IndustryType = @industryType, LegalRep = @legalRep, Logo = @logo, ContactInfoId = @contactInfoId, LocationId = @locationId WHERE CompanyId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("name", sql.VarChar(30), name)
+        .input("nit", sql.BigInt, nit)
+        .input("website", sql.VarChar(30), website)
+        .input("industryType", sql.VarChar(20), industryType)
+        .input("legalRep", sql.VarChar(30), legalRep)
+        .input("logo", sql.VarChar(200), logo)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .input("locationId", sql.VarChar(25), locationId)
+        .execute("UpdateCompany");
+    return result.recordset[0];
 };
 
 const deleteCompany = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM Company WHERE CompanyId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("DeleteCompany");
+    return result.recordset[0];
 };
 
 export{getAllCompanies, getCompanyById, createCompany, updateCompany, deleteCompany};

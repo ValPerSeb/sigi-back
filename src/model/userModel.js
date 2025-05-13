@@ -1,5 +1,6 @@
 import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
+import { sql } from "../config/db.js";
 
 const getAllUsers = async ()=>{
     const pool = await getConnection;
@@ -19,41 +20,41 @@ const createUserInfo = async ({ firstName, middleName, lastName, secondLastName,
     const pool = await getConnection;
     const id = generateId('USE');
     const result = await pool.request()
-        .input("id", id)
-        .input("firstName", firstName)
-        .input("middleName", middleName)
-        .input("lastName", lastName)
-        .input("secondLastName", secondLastName)
-        .input("dateOfBirth", dateOfBirth)
-        .input("idType", idType)
-        .input("idNumber", idNumber)
-        .input("contactInfoId", contactInfoId)
-        .query("INSERT INTO UserInfo (UserInfoId, FirstName, MiddleName, LastName, SecondLastName, DateOfBirth, IdType, IdNumber, ContactInfoId) VALUES (@id, @firstName, @middleName, @lastName, @secondLastName, @dateOfBirth, @idType, @idNumber, @contactInfoId)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("firstName", sql.VarChar(30), firstName)
+        .input("middleName", sql.VarChar(30), middleName)
+        .input("lastName", sql.VarChar(30), lastName)
+        .input("secondLastName", sql.VarChar(30), secondLastName)
+        .input("dateOfBirth", sql.Date, dateOfBirth)
+        .input("idType", sql.VarChar(20), idType)
+        .input("idNumber", sql.BigInt, idNumber)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .execute("CreateUserInfo");
+    return result.recordset[0];
 };
 
 const updateUserInfo = async (id, { firstName, middleName, lastName, secondLastName, dateOfBirth, idType, idNumber, contactInfoId }) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("firstName", firstName)
-        .input("middleName", middleName)
-        .input("lastName", lastName)
-        .input("secondLastName", secondLastName)
-        .input("dateOfBirth", dateOfBirth)
-        .input("idType", idType)
-        .input("idNumber", idNumber)
-        .input("contactInfoId", contactInfoId)
-        .query("UPDATE UserInfo SET FirstName = @firstName, MiddleName = @middleName, LastName = @lastName, SecondLastName = @secondLastName, DateOfBirth = @dateOfBirth, IdType = @idType, IdNumber = @idNumber, ContactInfoId = @contactInfoId WHERE UserInfoId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("firstName", sql.VarChar(30), firstName)
+        .input("middleName", sql.VarChar(30), middleName)
+        .input("lastName", sql.VarChar(30), lastName)
+        .input("secondLastName", sql.VarChar(30), secondLastName)
+        .input("dateOfBirth", sql.Date, dateOfBirth)
+        .input("idType", sql.VarChar(20), idType)
+        .input("idNumber", sql.BigInt, idNumber)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .execute("UpdateUserInfo");
+    return result.recordset[0];
 };
 
 const deleteUserInfo = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM UserInfo WHERE UserInfoId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("UpdateUserInfo");
+    return result.recordset[0];
 };
 
 export{getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo};

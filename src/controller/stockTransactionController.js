@@ -47,7 +47,7 @@ const addTransaction = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        await createTransaction({
+        const response = await createTransaction({
             date,
             transactionType,
             quantityChange,
@@ -59,7 +59,11 @@ const addTransaction = async (req, res) => {
             companyId
         });
 
-        res.status(200).json({ message: "Transacción creada exitosamente" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -88,7 +92,7 @@ const editTransaction = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const updated = await updateTransaction(id, {
+        const response = await updateTransaction(id, {
             date,
             transactionType,
             quantityChange,
@@ -100,11 +104,11 @@ const editTransaction = async (req, res) => {
             companyId
         });
 
-        if (updated === 0) {
-            return res.status(404).json({ message: "Transacción no encontrada" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Actualización exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -118,13 +122,13 @@ const removeTransaction = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const deleted = await deleteTransaction(id);
+        const response = await deleteTransaction(id);
 
-        if (deleted === 0) {
-            return res.status(404).json({ message: "Transacción no encontrada" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Eliminación exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

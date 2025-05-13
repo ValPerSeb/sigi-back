@@ -46,7 +46,7 @@ const addUser = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        await createUserInfo({
+        const response = await createUserInfo({
             firstName,
             middleName,
             lastName,
@@ -57,7 +57,11 @@ const addUser = async (req, res) => {
             contactInfoId
         });
 
-        res.status(200).json({ message: "Usuario creado exitosamente" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -85,7 +89,7 @@ const editUser = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const updated = await updateUserInfo(id, {
+        const response = await updateUserInfo(id, {
             firstName,
             middleName,
             lastName,
@@ -96,11 +100,11 @@ const editUser = async (req, res) => {
             contactInfoId
         });
 
-        if (updated === 0) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Actualización exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -114,13 +118,13 @@ const removeUser = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const deleted = await deleteUserInfo(id);
+        const response = await deleteUserInfo(id);
 
-        if (deleted === 0) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Eliminación exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

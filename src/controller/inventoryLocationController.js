@@ -37,8 +37,12 @@ const addInventoryLocation = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        await createInventoryLocation({ code, name, capacity, currentStock, isActive });
-        res.status(200).json({ message: "Creación exitosa" });
+        const response = await createInventoryLocation({ code, name, capacity, currentStock, isActive });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -57,13 +61,13 @@ const editInventoryLocation = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const affectedRows = await updateInventoryLocation(id, { code, name, capacity, currentStock, isActive });
+        const response = await updateInventoryLocation(id, { code, name, capacity, currentStock, isActive });
 
-        if (affectedRows === 0) {
-            return res.status(404).json({ message: "Ubicación de inventario no existe" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Actualización exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -77,13 +81,13 @@ const removeInventoryLocation = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const affectedRows = await deleteInventoryLocation(id);
+        const response = await deleteInventoryLocation(id);
 
-        if (affectedRows === 0) {
-            return res.status(404).json({ message: "Ubicación de inventario no existe" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Eliminación exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -1,5 +1,6 @@
 import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
+import { sql } from "../config/db.js";
 
 const getAllSuppliers = async ()=>{
     const pool = await getConnection;
@@ -19,33 +20,33 @@ const createSupplier = async ({ name, companyId, contactInfoId, locationId }) =>
     const pool = await getConnection;
     const id = generateId('SUP'); 
     const result = await pool.request()
-        .input("id", id)
-        .input("name", name)
-        .input("companyId", companyId)
-        .input("contactInfoId", contactInfoId)
-        .input("locationId", locationId)
-        .query("INSERT INTO Supplier (SupplierId, Name, CompanyId, ContactInfoId, LocationId) VALUES (@id, @name, @companyId, @contactInfoId, @locationId)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("name", sql.VarChar(30), name)
+        .input("companyId", sql.VarChar(25), companyId)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .input("locationId", sql.VarChar(25), locationId)
+        .execute("CreateSupplier");
+    return result.recordset[0];
 };
 
 const updateSupplier = async (id, { name, companyId, contactInfoId, locationId }) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("name", name)
-        .input("companyId", companyId)
-        .input("contactInfoId", contactInfoId)
-        .input("locationId", locationId)
-        .query("UPDATE Supplier SET Name = @name, CompanyId = @companyId, ContactInfoId = @contactInfoId, LocationId = @locationId WHERE SupplierId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("name", sql.VarChar(30), name)
+        .input("companyId", sql.VarChar(25), companyId)
+        .input("contactInfoId", sql.VarChar(25), contactInfoId)
+        .input("locationId", sql.VarChar(25), locationId)
+        .execute("UpdateSupplier");
+    return result.recordset[0];
 };
 
 const deleteSupplier = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM Supplier WHERE SupplierId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("DeleteSupplier");
+    return result.recordset[0];
 };
 
 export{getAllSuppliers, getSupplierById, createSupplier, updateSupplier, deleteSupplier};

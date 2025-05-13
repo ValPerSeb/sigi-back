@@ -24,8 +24,12 @@ const addContactInfo = async (req, res) => {
     try {
         const { phone, mobile, email } = req.body;
 
-        await createContactInfo({ phone, mobile, email });
-        res.status(200).json({ message: "Creación exitosa" });
+        const response = await createContactInfo({ phone, mobile, email });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,13 +44,13 @@ const editContactInfo = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const affectedRows = await updateContactInfo(id, { phone, mobile, email });
+        const response = await updateContactInfo(id, { phone, mobile, email });
 
-        if (affectedRows === 0) {
-            return res.status(404).json({ message: "Información de contacto no existe" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Actualización exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -60,13 +64,13 @@ const removeContactInfo = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const affectedRows = await deleteContactInfo(id);
+        const response = await deleteContactInfo(id);
 
-        if (affectedRows === 0) {
-            return res.status(404).json({ message: "Información de contacto no existe" });
+        if (response.Success === 1) {
+            res.status(200).json({ message: response.Message });
+        } else {
+            res.status(404).json({ error: response.Message });
         }
-
-        res.status(200).json({ message: "Eliminación exitosa" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

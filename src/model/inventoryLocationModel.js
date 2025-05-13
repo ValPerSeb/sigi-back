@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
 const getAllInventoryLocations = async ()=>{
@@ -19,35 +19,35 @@ const createInventoryLocation = async ({ code, name, capacity, currentStock, isA
     const pool = await getConnection;
     const id = generateId('INV');
     const result = await pool.request()
-        .input("id", id)
-        .input("code", code)
-        .input("name", name)
-        .input("capacity", capacity)
-        .input("currentStock", currentStock)
-        .input("isActive", isActive)
-        .query("INSERT INTO InventoryLocation (InventoryLocationId, LocationCode, LocationName, Capacity, CurrentStock, IsActive) VALUES (@id, @code, @name, @capacity, @currentStock, @isActive)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("code", sql.VarChar(20), code)
+        .input("name", sql.VarChar(30), name)
+        .input("capacity", sql.Int, capacity)
+        .input("currentStock", sql.Int, currentStock)
+        .input("isActive", sql.Bit, isActive)
+        .execute("CreateInventoryLocation");
+    return result.recordset[0];
 };
 
 const updateInventoryLocation = async (id, { code, name, capacity, currentStock, isActive}) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("code", code)
-        .input("name", name)
-        .input("capacity", capacity)
-        .input("currentStock", currentStock)
-        .input("isActive", isActive)
-        .query("UPDATE InventoryLocation SET LocationCode = @code, LocationName = @name, Capacity = @capacity, CurrentStock = @currentStock, IsActive = @isActive WHERE InventoryLocationId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("code", sql.VarChar(20), code)
+        .input("name", sql.VarChar(30), name)
+        .input("capacity", sql.Int, capacity)
+        .input("currentStock", sql.Int, currentStock)
+        .input("isActive", sql.Bit, isActive)
+        .execute("UpdateInventoryLocation");
+    return result.recordset[0];
 };
 
 const deleteInventoryLocation = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM InventoryLocation WHERE InventoryLocationId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("DeleteInventoryLocation");
+    return result.recordset[0];
 };
 
 export{getAllInventoryLocations, getInventoryLocationById, createInventoryLocation, updateInventoryLocation, deleteInventoryLocation};

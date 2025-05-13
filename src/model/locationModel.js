@@ -1,5 +1,6 @@
 import { getConnection } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
+import { sql } from "../config/db.js";
 
 const getLocationById = async (id) => {
     const pool = await getConnection;
@@ -13,35 +14,35 @@ const createLocation = async ({ addressUno, addressDos, postalCode, city, countr
     const pool = await getConnection;
     const id = generateId('LOC');
     const result = await pool.request()
-        .input("id", id)
-        .input("addressUno", addressUno)
-        .input("addressDos", addressDos)
-        .input("postalCode", postalCode)
-        .input("city", city)
-        .input("country", country)
-        .query("INSERT INTO Location (LocationId, AddressUno, AddressDos, PostalCode, City, Country) VALUES (@id, @addressUno, @addressDos, @postalCode, @city, @country)");
-    return result;
+        .input("id", sql.VarChar(25), id)
+        .input("addressUno", sql.VarChar(30), addressUno)
+        .input("addressDos", sql.VarChar(30), addressDos)
+        .input("postalCode", sql.Int, postalCode)
+        .input("city", sql.VarChar(30), city)
+        .input("country", sql.VarChar(30), country)
+        .execute("CreateLocation");
+    return result.recordset[0];
 };
 
 const updateLocation = async (id, { addressUno, addressDos, postalCode, city, country }) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .input("addressUno", addressUno)
-        .input("addressDos", addressDos)
-        .input("postalCode", postalCode)
-        .input("city", city)
-        .input("country", country)
-        .query("UPDATE Location SET AddressUno = @addressUno, AddressDos = @addressDos, PostalCode = @postalCode, City = @city, Country = @country WHERE LocationId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .input("addressUno", sql.VarChar(30), addressUno)
+        .input("addressDos", sql.VarChar(30), addressDos)
+        .input("postalCode", sql.Int, postalCode)
+        .input("city", sql.VarChar(30), city)
+        .input("country", sql.VarChar(30), country)
+        .execute("UpdateLocation");
+    return result.recordset[0];
 };
 
 const deleteLocation = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
-        .input("id", id)
-        .query("DELETE FROM Location WHERE LocationId = @id");
-    return result.rowsAffected[0];
+        .input("id", sql.VarChar(25), id)
+        .execute("DeleteLocation");
+    return result.recordset[0];
 };
 
 export{getLocationById, createLocation, updateLocation, deleteLocation};
