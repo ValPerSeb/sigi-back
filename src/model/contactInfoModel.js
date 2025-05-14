@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
 const getContactInfoById = async (id) => {
@@ -9,24 +9,24 @@ const getContactInfoById = async (id) => {
     return result.rowsAffected[0];
 };
 
-const createContactInfo = async ({ phone, mobile, email}) => {
+const createContactInfo = async ({ phoneNumber, mobileNumber, email}) => {
     const pool = await getConnection;
     const id = generateId('CON');
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .input("phone", sql.BigInt, phone)
-        .input("mobile", sql.BigInt, mobile)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("mobileNumber", sql.BigInt, mobileNumber)
         .input("email",sql.VarChar(25),email)
         .execute("CreateContactInfo");
-    return result.recordset[0];;
+    return {...result.recordset[0], id};
 };
 
-const updateContactInfo = async (id, { phone, mobile, email}) => {
+const updateContactInfo = async (id, { phoneNumber, mobileNumber, email}) => {
     const pool = await getConnection;
     const result = await pool.request()
-         .input("id", sql.VarChar(25), id)
-        .input("phone", sql.BigInt, phone)
-        .input("mobile", sql.BigInt, mobile)
+        .input("id", sql.VarChar(25), id)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("mobileNumber", sql.BigInt, mobileNumber)
         .input("email",sql.VarChar(25),email)
         .execute("UpdateContactInfo");
     return result.recordset[0];

@@ -1,6 +1,5 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
-import { sql } from "../config/db.js";
 
 const getAllSuppliers = async ({ searchBy, searchValue, page, limit })=>{
     const pool = await getConnection;

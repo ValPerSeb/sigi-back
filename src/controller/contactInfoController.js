@@ -22,11 +22,11 @@ const contactInfoDetails = async (req, res) => {
 
 const addContactInfo = async (req, res) => {
     try {
-        const { phone, mobile, email } = req.body;
+        const { phoneNumber, mobileNumber, email } = req.body;
 
-        const response = await createContactInfo({ phone, mobile, email });
+        const response = await createContactInfo({ phoneNumber, mobileNumber, email });
         if (response.Success === 1) {
-            res.status(200).json({ message: response.Message });
+            res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
         }

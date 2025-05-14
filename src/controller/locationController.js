@@ -30,7 +30,7 @@ const addLocation = async (req, res) => {
 
         const response = await createLocation({ addressUno, addressDos, postalCode, city, country });
         if (response.Success === 1) {
-            res.status(200).json({ message: response.Message });
+            res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
         }

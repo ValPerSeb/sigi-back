@@ -1,6 +1,5 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
-import { sql } from "../config/db.js";
 
 const getLocationById = async (id) => {
     const pool = await getConnection;
@@ -21,7 +20,7 @@ const createLocation = async ({ addressUno, addressDos, postalCode, city, countr
         .input("city", sql.VarChar(30), city)
         .input("country", sql.VarChar(30), country)
         .execute("CreateLocation");
-    return result.recordset[0];
+    return {...result.recordset[0], id};
 };
 
 const updateLocation = async (id, { addressUno, addressDos, postalCode, city, country }) => {

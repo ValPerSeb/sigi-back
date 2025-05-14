@@ -1,4 +1,4 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
 const getLoginByUserName = async (userName) => {

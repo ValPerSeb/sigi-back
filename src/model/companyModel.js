@@ -1,6 +1,5 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
-import { sql } from "../config/db.js";
 
 const getAllCompanies = async ({ searchBy, searchValue, page, limit }) => {
     const pool = await getConnection;
@@ -60,11 +59,11 @@ const createCompany = async ({ name, nit, website, industryType, legalRep, logo,
     return result.recordset[0];
 };
 
-const updateCompany = async (id, { name, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
+const updateCompany = async (id, { companyName, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .input("name", sql.VarChar(30), name)
+        .input("companyName", sql.VarChar(30), companyName)
         .input("nit", sql.BigInt, nit)
         .input("website", sql.VarChar(30), website)
         .input("industryType", sql.VarChar(20), industryType)
