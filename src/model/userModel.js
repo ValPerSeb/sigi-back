@@ -28,13 +28,21 @@ const getUserInfobyId = async (id) => {
     return result.recordset[0];
 };
 
+const getUserInfobyUserName = async (userName) => {
+    const pool = await getConnection;
+    const result = await pool.request()
+        .input("userName", userName)
+        .query("SELECT * FROM UserInfo WHERE UserName = @userName");
+    return result.recordset[0];
+};
+
 const createUserInfo = async ({ userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId }) => {
     const pool = await getConnection;
     const id = generateId('USE');
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("userName", sql.VarChar(30), userName)
-        .input("password", sql.VarChar(50), password)
+        .input("password", sql.VarChar(100), password)
         .input("rol", sql.VarChar(20), rol)
         .input("firstName", sql.VarChar(30), firstName)
         .input("middleName", sql.VarChar(30), middleName)
@@ -53,7 +61,7 @@ const updateUserInfo = async (id, { userName, password, rol, firstName, middleNa
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("userName", sql.VarChar(30), userName)
-        .input("password", sql.VarChar(50), password)
+        .input("password", sql.VarChar(100), password)
         .input("rol", sql.VarChar(20), rol)
         .input("firstName", sql.VarChar(30), firstName)
         .input("middleName", sql.VarChar(30), middleName)
@@ -74,4 +82,4 @@ const deleteUserInfo = async (id) => {
     return result.recordset[0];
 };
 
-export{ getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo };
+export{ getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo, getUserInfobyUserName };

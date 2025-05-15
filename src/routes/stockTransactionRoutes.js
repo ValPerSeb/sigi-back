@@ -1,12 +1,11 @@
 import express  from 'express'
-import { listTransactions, transactionDetails, addTransaction, editTransaction, removeTransaction } from '../controller/stockTransactionController.js'
+import { listTransactions, transactionDetails } from '../controller/stockTransactionController.js'
+import authMiddleware from '../middleware/authMiddleware.js';
+import checkRoleMiddleware from '../middleware/checkRoleMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', listTransactions);
-router.get('/:id', transactionDetails);
-router.post('/', addTransaction);
-router.put('/:id', editTransaction);
-router.delete('/:id', removeTransaction);
+router.get('/', authMiddleware, checkRoleMiddleware('SUPER','ADMIN','USER'), listTransactions);
+router.get('/:id', authMiddleware, checkRoleMiddleware('SUPER','ADMIN','USER'), transactionDetails);
 
 export default router;

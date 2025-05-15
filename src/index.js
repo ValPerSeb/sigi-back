@@ -10,6 +10,7 @@ import productRoutes from './routes/productRoutes.js';
 import stockTransactionRoutes from './routes/stockTransactionRoutes.js';
 import supplierRoutes from './routes/SupplierRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ export const COMPANY_ID = process.env.COMPANY_ID;
 app.use(cors());
 app.use(express.json());
 
+app.use('/login', authRoutes);
 app.use('/category', categoryRoutes);
 app.use('/company', companyRoutes);
 app.use('/inventory-location', inventoryLocationRoutes);

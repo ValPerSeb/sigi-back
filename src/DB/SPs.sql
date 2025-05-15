@@ -309,7 +309,7 @@ GO
 CREATE PROCEDURE [dbo].[CreateUserInfo]
     @id VARCHAR(25),
 	@userName VARCHAR(30),
-	@password VARCHAR(50),
+	@password VARCHAR(100),
 	@rol VARCHAR(20),
 	@firstName VARCHAR(30),
 	@middleName VARCHAR(30),
@@ -796,13 +796,13 @@ BEGIN
             SELECT p.*, c.CategoryName
             FROM Product p
             LEFT JOIN Category c ON p.CategoryId = c.Id
-            WHERE ' + QUOTENAME(@searchBy) + ' LIKE @searchValue
+            WHERE p.' + QUOTENAME(@searchBy) + ' LIKE @searchValue
 				AND p.CompanyId = @companyId
             ORDER BY p.Id
             OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
 
             SELECT COUNT(*) AS total FROM Product p
-            WHERE ' + QUOTENAME(@searchBy) + ' LIKE @searchValue
+            WHERE p.' + QUOTENAME(@searchBy) + ' LIKE @searchValue
 				AND p.CompanyId = @companyId;
         ';
 

@@ -1,4 +1,5 @@
 import { getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo } from "../model/userModel.js";
+import bcrypt from 'bcrypt';
 
 const userList = async (req, res) => {
     try {
@@ -38,7 +39,10 @@ const addUser = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await createUserInfo({ userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
+        const salt = 10;
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const response = await createUserInfo({ userName, password: hashedPassword, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });

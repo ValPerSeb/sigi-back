@@ -48,7 +48,7 @@ const editAddress = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!addressUno || !city || !country) {
+        if (!address1 || !city || !country) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
