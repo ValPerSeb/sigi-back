@@ -1,6 +1,6 @@
-import { getLocationById, createLocation, updateLocation, deleteLocation } from "../model/locationModel.js";
+import { getAddressById, createAddress, updateAddress, deleteAddress } from "../model/addressModel.js";
 
-const locationDetails = async (req, res) => {
+const addressDetails = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -8,27 +8,27 @@ const locationDetails = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const location = await getLocationById(id);
+        const address = await getAddressById(id);
 
-        if (!location) {
+        if (!address) {
             return res.status(404).json({ message: "Ubicación no encontrada" });
         }
 
-        res.status(200).json(location);
+        res.status(200).json(address);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-const addLocation = async (req, res) => {
+const addAddress = async (req, res) => {
     try {
-        const { addressUno, addressDos, postalCode, city, country } = req.body;
+        const { address1, address2, postalCode, city, country } = req.body;
 
-        if (!addressUno || !city || !country) {
+        if (!address1 || !city || !country) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await createLocation({ addressUno, addressDos, postalCode, city, country });
+        const response = await createAddress({ address1, address2, postalCode, city, country });
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
         } else {
@@ -39,10 +39,10 @@ const addLocation = async (req, res) => {
     }
 };
 
-const editLocation = async (req, res) => {
+const editAddress = async (req, res) => {
     try {
         const { id } = req.params;
-        const { addressUno, addressDos, postalCode, city, country } = req.body;
+        const { address1, address2, postalCode, city, country } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
@@ -52,7 +52,7 @@ const editLocation = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateLocation(id, { addressUno, addressDos, postalCode, city, country });
+        const response = await updateAddress(id, { address1, address2, postalCode, city, country });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });
@@ -64,7 +64,7 @@ const editLocation = async (req, res) => {
     }
 };
 
-const removeLocation = async (req, res) => {
+const removeAddress = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -72,7 +72,7 @@ const removeLocation = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        const response = await deleteLocation(id);
+        const response = await deleteAddress(id);
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });
@@ -84,4 +84,4 @@ const removeLocation = async (req, res) => {
     }
 };
 
-export { locationDetails, addLocation, editLocation, removeLocation };
+export { addressDetails, addAddress, editAddress, removeAddress };

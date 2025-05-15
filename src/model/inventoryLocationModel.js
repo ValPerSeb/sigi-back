@@ -1,4 +1,5 @@
 import { getConnection, sql } from "../config/db.js";
+import { COMPANY_ID } from "../index.js";
 import { generateId } from "../utils/generateId.js";
 
 const getAllInventoryLocations = async ({ searchBy, searchValue, page, limit })=>{
@@ -8,6 +9,7 @@ const getAllInventoryLocations = async ({ searchBy, searchValue, page, limit })=
         .input('searchValue', sql.NVarChar, searchValue)
         .input('page', sql.Int, page)
         .input('limit', sql.Int, limit)
+        .input('companyId', COMPANY_ID)
         .execute("GetInventoryLocations");
 
     return {
@@ -22,7 +24,7 @@ const getInventoryLocationById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM InventoryLocation WHERE InventoryLocationId = @id");
+        .query("SELECT * FROM InventoryLocation WHERE Id = @id");
     return result.recordset[0];
 };
 
@@ -36,6 +38,7 @@ const createInventoryLocation = async ({ code, name, capacity, currentStock, isA
         .input("capacity", sql.Int, capacity)
         .input("currentStock", sql.Int, currentStock)
         .input("isActive", sql.Bit, isActive)
+        .input('companyId', COMPANY_ID)
         .execute("CreateInventoryLocation");
     return {...result.recordset[0], id};
 };

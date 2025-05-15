@@ -18,44 +18,45 @@ const getAllCompanies = async ({ searchBy, searchValue, page, limit }) => {
     };
 }
 
-
 const getCompanyById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Company WHERE CompanyId = @id");
+        .query("SELECT * FROM Company WHERE Id = @id");
     return result.recordset[0];
 };
 
-const createCompany = async ({ name, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
+const createCompany = async ({ name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId }) => {
     const pool = await getConnection;
     const id = generateId('COM');
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("name", sql.VarChar(30), name)
         .input("nit", sql.BigInt, nit)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("email", sql.VarChar(50), email)
         .input("website", sql.VarChar(30), website)
         .input("industryType", sql.VarChar(20), industryType)
         .input("legalRep", sql.VarChar(30), legalRep)
         .input("logo", sql.VarChar(200), logo)
-        .input("contactInfoId", sql.VarChar(25), contactInfoId)
-        .input("locationId", sql.VarChar(25), locationId)
+        .input("addressId", sql.VarChar(25), addressId)
         .execute("CreateCompany");
     return {...result.recordset[0], id};
 };
 
-const updateCompany = async (id, { companyName, nit, website, industryType, legalRep, logo, contactInfoId, locationId }) => {
+const updateCompany = async (id, { name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .input("companyName", sql.VarChar(30), companyName)
+        .input("name", sql.VarChar(30), name)
         .input("nit", sql.BigInt, nit)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("email", sql.VarChar(50), email)
         .input("website", sql.VarChar(30), website)
         .input("industryType", sql.VarChar(20), industryType)
         .input("legalRep", sql.VarChar(30), legalRep)
         .input("logo", sql.VarChar(200), logo)
-        .input("contactInfoId", sql.VarChar(25), contactInfoId)
-        .input("locationId", sql.VarChar(25), locationId)
+        .input("addressId", sql.VarChar(25), addressId)
         .execute("UpdateCompany");
     return result.recordset[0];
 };

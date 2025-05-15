@@ -1,47 +1,47 @@
 import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
-const getLocationById = async (id) => {
+const getAddressById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Location WHERE LocationId = @id");
+        .query("SELECT * FROM Address WHERE Id = @id");
     return result.recordset[0];
 };
 
-const createLocation = async ({ addressUno, addressDos, postalCode, city, country }) => {
+const createAddress = async ({ address1, address2, postalCode, city, country }) => {
     const pool = await getConnection;
-    const id = generateId('LOC');
+    const id = generateId('ADR');
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .input("addressUno", sql.VarChar(30), addressUno)
-        .input("addressDos", sql.VarChar(30), addressDos)
+        .input("address1", sql.VarChar(30), address1)
+        .input("address2", sql.VarChar(30), address2)
         .input("postalCode", sql.Int, postalCode)
         .input("city", sql.VarChar(30), city)
         .input("country", sql.VarChar(30), country)
-        .execute("CreateLocation");
+        .execute("CreateAddress");
     return {...result.recordset[0], id};
 };
 
-const updateLocation = async (id, { addressUno, addressDos, postalCode, city, country }) => {
+const updateAddress = async (id, { address1, address2, postalCode, city, country }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .input("addressUno", sql.VarChar(30), addressUno)
-        .input("addressDos", sql.VarChar(30), addressDos)
+        .input("address1", sql.VarChar(30), address1)
+        .input("address2", sql.VarChar(30), address2)
         .input("postalCode", sql.Int, postalCode)
         .input("city", sql.VarChar(30), city)
         .input("country", sql.VarChar(30), country)
-        .execute("UpdateLocation");
+        .execute("UpdateAddress");
     return result.recordset[0];
 };
 
-const deleteLocation = async (id) => {
+const deleteAddress = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
-        .execute("DeleteLocation");
+        .execute("DeleteAddress");
     return result.recordset[0];
 };
 
-export{getLocationById, createLocation, updateLocation, deleteLocation};
+export{getAddressById, createAddress, updateAddress, deleteAddress};

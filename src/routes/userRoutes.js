@@ -1,9 +1,9 @@
 import express  from 'express'
-import { listUsers, userDetails, addUser, editUser, removeUser } from '../controller/userController.js'
+import { userList, userDetails, addUser, editUser, removeUser } from '../controller/userController.js'
 
 const router = express.Router();
 
-router.get('/', listUsers);
+router.get('/', userList);
 router.get('/:id', userDetails);
 router.post('/', addUser);
 router.put('/:id', editUser);

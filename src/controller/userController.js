@@ -1,13 +1,14 @@
 import { getAllUsers, getUserInfobyId, createUserInfo, updateUserInfo, deleteUserInfo } from "../model/userModel.js";
 
-const listUsers = async (req, res) => {
+const userList = async (req, res) => {
     try {
-        const users = await getAllUsers();
-        res.status(200).json(users);
+        const { searchBy = null, searchValue = null, page = 1, limit = 10 } = req.query;
+        const products = await getAllUsers({ searchBy, searchValue, page: parseInt(page, 10), limit: parseInt(limit, 10) });
+        res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+}
 
 const userDetails = async (req, res) => {
     try {
@@ -31,31 +32,13 @@ const userDetails = async (req, res) => {
 
 const addUser = async (req, res) => {
     try {
-        const {
-            firstName,
-            middleName,
-            lastName,
-            secondLastName,
-            dateOfBirth,
-            idType,
-            idNumber,
-            contactInfoId
-        } = req.body;
+        const { userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId } = req.body;
 
-        if (!firstName || !lastName || !dateOfBirth || !idType || !idNumber || !contactInfoId) {
+        if (!userName || !password || !rol || !firstName || !lastName || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await createUserInfo({
-            firstName,
-            middleName,
-            lastName,
-            secondLastName,
-            dateOfBirth,
-            idType,
-            idNumber,
-            contactInfoId
-        });
+        const response = await createUserInfo({ userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
@@ -70,35 +53,17 @@ const addUser = async (req, res) => {
 const editUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const {
-            firstName,
-            middleName,
-            lastName,
-            secondLastName,
-            dateOfBirth,
-            idType,
-            idNumber,
-            contactInfoId
-        } = req.body;
+        const { userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!firstName || !lastName || !dateOfBirth || !idType || !idNumber || !contactInfoId) {
+        if (!userName || !password || !rol || !firstName || !lastName || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateUserInfo(id, {
-            firstName,
-            middleName,
-            lastName,
-            secondLastName,
-            dateOfBirth,
-            idType,
-            idNumber,
-            contactInfoId
-        });
+        const response = await updateUserInfo(id, { userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });
@@ -130,4 +95,4 @@ const removeUser = async (req, res) => {
     }
 };
 
-export { listUsers, userDetails, addUser, editUser, removeUser };
+export { userList, userDetails, addUser, editUser, removeUser };

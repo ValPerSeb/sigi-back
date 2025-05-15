@@ -32,11 +32,11 @@ const productDetails = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
-        if (!productName || !unitPrice || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId) {
+        const { productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId } = req.body;
+        if (!productName || !unitPrice || !stock) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
-        const response = await createProduct({ productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId });
+        const response = await createProduct({ productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId });
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
         } else {
@@ -50,17 +50,17 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId } = req.body;
+        const { productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id obligatorio" });
         }
 
-        if (!productName || !unitPrice || !stock || !companyId || !supplierId || !categoryId || !inventoryLocationId) {
+        if (!productName || !unitPrice || !stock) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateProduct(id, { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId });
+        const response = await updateProduct(id, { productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });

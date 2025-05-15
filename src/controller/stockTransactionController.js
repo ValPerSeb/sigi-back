@@ -32,33 +32,13 @@ const transactionDetails = async (req, res) => {
 
 const addTransaction = async (req, res) => {
     try {
-        const {
-            date,
-            transactionType,
-            quantityChange,
-            description,
-            inventoryLocationIdOld,
-            inventoryLocationIdNew,
-            productName,
-            userName,
-            companyId
-        } = req.body;
+        const { date, type, quantity, description, inventoryLocationIdOld, inventoryLocationIdNew, userId, productId } = req.body;
 
-        if (!date || !transactionType || !quantityChange || !productName || !userName || !companyId) {
+        if (!date || !type) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await createTransaction({
-            date,
-            transactionType,
-            quantityChange,
-            description,
-            inventoryLocationIdOld,
-            inventoryLocationIdNew,
-            productName,
-            userName,
-            companyId
-        });
+        const response = await createTransaction({ date, type, quantity, description, inventoryLocationIdOld, inventoryLocationIdNew, userId, productId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
@@ -73,37 +53,17 @@ const addTransaction = async (req, res) => {
 const editTransaction = async (req, res) => {
     try {
         const { id } = req.params;
-        const {
-            date,
-            transactionType,
-            quantityChange,
-            description,
-            inventoryLocationIdOld,
-            inventoryLocationIdNew,
-            productName,
-            userName,
-            companyId
-        } = req.body;
+        const { date, type, quantity, description, inventoryLocationIdOld, inventoryLocationIdNew, userId, productId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!date || !transactionType || !quantityChange || !productName || !userName || !companyId) {
+        if (!date || !type) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateTransaction(id, {
-            date,
-            transactionType,
-            quantityChange,
-            description,
-            inventoryLocationIdOld,
-            inventoryLocationIdNew,
-            productName,
-            userName,
-            companyId
-        });
+        const response = await updateTransaction(id, { date, type, quantity, description, inventoryLocationIdOld, inventoryLocationIdNew, userId, productId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });

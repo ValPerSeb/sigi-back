@@ -1,4 +1,5 @@
 import { getConnection, sql } from "../config/db.js";
+import { COMPANY_ID } from "../index.js";
 import { generateId } from "../utils/generateId.js";
 
 const getAllSuppliers = async ({ searchBy, searchValue, page, limit })=>{
@@ -8,6 +9,7 @@ const getAllSuppliers = async ({ searchBy, searchValue, page, limit })=>{
         .input('searchValue', sql.NVarChar, searchValue)
         .input('page', sql.Int, page)
         .input('limit', sql.Int, limit)
+        .input('companyId', COMPANY_ID)
         .execute("GetSuppliers");
 
     return {
@@ -22,31 +24,32 @@ const getSupplierById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Supplier WHERE SupplierId = @id");
+        .query("SELECT * FROM Supplier WHERE Id = @id");
     return result.recordset[0];
 };
 
-const createSupplier = async ({ name, companyId, contactInfoId, locationId }) => {
+const createSupplier = async ({ name, phoneNumber, email, addressId }) => {
     const pool = await getConnection;
     const id = generateId('SUP'); 
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("name", sql.VarChar(30), name)
-        .input("companyId", sql.VarChar(25), companyId)
-        .input("contactInfoId", sql.VarChar(25), contactInfoId)
-        .input("locationId", sql.VarChar(25), locationId)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("email", sql.VarChar(50), email)
+        .input("addressId", sql.VarChar(25), addressId)
+        .input('companyId', COMPANY_ID)
         .execute("CreateSupplier");
     return {...result.recordset[0], id};
 };
 
-const updateSupplier = async (id, { name, companyId, contactInfoId, locationId }) => {
+const updateSupplier = async (id, { name, phoneNumber, email, addressId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("name", sql.VarChar(30), name)
-        .input("companyId", sql.VarChar(25), companyId)
-        .input("contactInfoId", sql.VarChar(25), contactInfoId)
-        .input("locationId", sql.VarChar(25), locationId)
+        .input("phoneNumber", sql.BigInt, phoneNumber)
+        .input("email", sql.VarChar(50), email)
+        .input("addressId", sql.VarChar(25), addressId)
         .execute("UpdateSupplier");
     return result.recordset[0];
 };

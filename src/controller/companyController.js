@@ -32,11 +32,11 @@ const companyDetails = async (req, res) => {
 
 const addCompany = async (req, res) => {
     try {
-        const { name, nit, website, industryType, legalRep, logo, contactInfoId, locationId } = req.body;
-        if (!name || !nit || !contactInfoId || !locationId) {
+        const { name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId } = req.body;
+        if (!name || !nit || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
-        const response = await createCompany({ name, nit, website, industryType, legalRep, logo, contactInfoId, locationId });
+        const response = await createCompany({ name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId });
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
         } else {
@@ -50,17 +50,17 @@ const addCompany = async (req, res) => {
 const editCompany = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, nit, website, industryType, legalRep, logo, contactInfoId, locationId } = req.body;
+        const { name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!name || !nit || !contactInfoId || !locationId) {
+        if (!name || !nit || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateCompany(id, { name, nit, website, industryType, legalRep, logo, contactInfoId, locationId });
+        const response = await updateCompany(id, { name, nit, phoneNumber, email, website, industryType, legalRep, logo, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });

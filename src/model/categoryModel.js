@@ -1,4 +1,5 @@
 import { getConnection, sql } from "../config/db.js";
+import { COMPANY_ID } from "../index.js";
 import { generateId } from "../utils/generateId.js";
 
 const getAllCategories = async ({ searchBy, searchValue, page, limit })=>{
@@ -8,6 +9,7 @@ const getAllCategories = async ({ searchBy, searchValue, page, limit })=>{
         .input('searchValue', sql.NVarChar, searchValue)
         .input('page', sql.Int, page)
         .input('limit', sql.Int, limit)
+        .input('companyId', COMPANY_ID)
         .execute("GetCategories");
 
     return {
@@ -22,7 +24,7 @@ const getCategoryById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Category WHERE CategoryId = @id");
+        .query("SELECT * FROM Category WHERE Id = @id");
     return result.recordset[0];
 };
 
@@ -33,7 +35,8 @@ const createCategory = async ({ name, color }) => {
         .input("id", sql.VarChar(25), id)
         .input("name", sql.VarChar(30), name)
         .input("color", sql.VarChar(30), color)
-        .execute("AddCategory");
+        .input('companyId', COMPANY_ID)
+        .execute("CreateCategory");
     return {...result.recordset[0], id};
 };
 

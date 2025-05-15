@@ -32,13 +32,13 @@ const supplierDetails = async (req, res) => {
 
 const addSupplier = async (req, res) => {
     try {
-        const { name, companyId, contactInfoId, locationId } = req.body;
+        const { name, phoneNumber, email, addressId } = req.body;
 
-        if (!name || !companyId || !contactInfoId || !locationId) {
+        if (!name || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await createSupplier({ name, companyId, contactInfoId, locationId });
+        const response = await createSupplier({ name, phoneNumber, email, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message, id: response.id });
@@ -53,17 +53,17 @@ const addSupplier = async (req, res) => {
 const editSupplier = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, companyId, contactInfoId, locationId } = req.body;
+        const { name, phoneNumber, email, addressId } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!name || !companyId || !contactInfoId || !locationId) {
+        if (!name || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateSupplier(id, { name, companyId, contactInfoId, locationId });
+        const response = await updateSupplier(id, { name, phoneNumber, email, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });

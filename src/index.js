@@ -4,9 +4,8 @@ import dotenv from 'dotenv'
 import { getConnection } from './config/db.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
-import contactInfoRoutes from './routes/contactInfoRoutes.js';
 import inventoryLocationRoutes from './routes/inventoryLocationRoutes.js';
-import locationRoutes from './routes/locationRoutes.js';
+import addressRoutes from './routes/addressRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import stockTransactionRoutes from './routes/stockTransactionRoutes.js';
 import supplierRoutes from './routes/SupplierRoutes.js';
@@ -16,14 +15,15 @@ dotenv.config();
 
 const app = express();
 
+export const COMPANY_ID = process.env.COMPANY_ID;
+
 app.use(cors());
 app.use(express.json());
 
 app.use('/category', categoryRoutes);
 app.use('/company', companyRoutes);
-app.use('/contact-info', contactInfoRoutes);
 app.use('/inventory-location', inventoryLocationRoutes);
-app.use('/location', locationRoutes);
+app.use('/address', addressRoutes);
 app.use('/product', productRoutes);
 app.use('/stock-transaction', stockTransactionRoutes);
 app.use('/supplier', supplierRoutes);

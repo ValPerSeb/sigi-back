@@ -1,4 +1,5 @@
 import { getConnection, sql } from "../config/db.js";
+import { COMPANY_ID } from "../index.js";
 import { generateId } from "../utils/generateId.js";
 
 const getAllProducts = async ({ searchBy, searchValue, page, limit })=>{
@@ -8,6 +9,7 @@ const getAllProducts = async ({ searchBy, searchValue, page, limit })=>{
         .input('searchValue', sql.NVarChar, searchValue)
         .input('page', sql.Int, page)
         .input('limit', sql.Int, limit)
+        .input('companyId', COMPANY_ID)
         .execute("GetProducts");
 
     return {
@@ -22,11 +24,11 @@ const getProductById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Product WHERE ProductId = @id");
+        .query("SELECT * FROM Product WHERE Id = @id");
     return result.recordset[0];
 };
 
-const createProduct = async ({ productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId }) => {
+const createProduct = async ({ productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId }) => {
     const pool = await getConnection;
     const id = generateId('PRO'); 
     const result = await pool.request()
@@ -34,22 +36,21 @@ const createProduct = async ({ productName, unitPrice, stock, companyId, supplie
         .input("productName", sql.VarChar(30), productName)
         .input("unitPrice", sql.Float, unitPrice)
         .input("stock", sql.Int, stock)
-        .input("companyId", sql.VarChar(25), companyId)
         .input("supplierId", sql.VarChar(25), supplierId)
         .input("categoryId", sql.VarChar(25), categoryId)
         .input("inventoryLocationId", sql.VarChar(25), inventoryLocationId)
+        .input('companyId', COMPANY_ID)
         .execute("CreateProduct");
     return {...result.recordset[0], id};
 };
 
-const updateProduct = async (id, { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId }) => {
+const updateProduct = async (id, { productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId }) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", sql.VarChar(25), id)
         .input("productName", sql.VarChar(30), productName)
         .input("unitPrice", sql.Float, unitPrice)
         .input("stock", sql.Int, stock)
-        .input("companyId", sql.VarChar(25), companyId)
         .input("supplierId", sql.VarChar(25), supplierId)
         .input("categoryId", sql.VarChar(25), categoryId)
         .input("inventoryLocationId", sql.VarChar(25), inventoryLocationId)
