@@ -793,15 +793,17 @@ BEGIN
         SET @searchValueLike = '%' + @searchValue + '%';
 
         SET @sql = '
-            SELECT * FROM Product
+            SELECT p.*, c.CategoryName
+            FROM Product p
+            LEFT JOIN Category c ON p.CategoryId = c.Id
             WHERE ' + QUOTENAME(@searchBy) + ' LIKE @searchValue
-				AND CompanyId = @companyId
-            ORDER BY Id
+				AND p.CompanyId = @companyId
+            ORDER BY p.Id
             OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
 
-            SELECT COUNT(*) AS total FROM Product
+            SELECT COUNT(*) AS total FROM Product p
             WHERE ' + QUOTENAME(@searchBy) + ' LIKE @searchValue
-				AND CompanyId = @companyId;
+				AND p.CompanyId = @companyId;
         ';
 
         EXEC sp_executesql @sql,
@@ -813,13 +815,16 @@ BEGIN
     END
     ELSE
     BEGIN
-        SELECT * FROM Product
-		WHERE CompanyId = @companyId
-        ORDER BY Id
+        SELECT p.*, c.CategoryName
+        FROM Product p
+        LEFT JOIN Category c ON p.CategoryId = c.Id
+        WHERE p.CompanyId = @companyId
+        ORDER BY p.Id
         OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
 
-        SELECT COUNT(*) AS total FROM Product
-		WHERE CompanyId = @companyId;
+        SELECT COUNT(*) AS total
+        FROM Product p
+        WHERE p.CompanyId = @companyId;
     END
 END
 GO
