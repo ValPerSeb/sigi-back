@@ -2,7 +2,8 @@ import { getAllTransactions, getTransactionById, createTransaction, updateTransa
 
 const listTransactions = async (req, res) => {
     try {
-        const transactions = await getAllTransactions();
+        const { searchBy = null, searchValue = null, page = 1, limit = 10 } = req.query;
+        const transactions = await getAllTransactions({ searchBy, searchValue, page: parseInt(page, 10), limit: parseInt(limit, 10) });
         res.status(200).json(transactions);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -60,7 +61,7 @@ const addTransaction = async (req, res) => {
         });
 
         if (response.Success === 1) {
-            res.status(200).json({ message: response.Message });
+            res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
         }

@@ -58,7 +58,7 @@ const addUser = async (req, res) => {
         });
 
         if (response.Success === 1) {
-            res.status(200).json({ message: response.Message });
+            res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
         }

@@ -1,10 +1,21 @@
 import { getConnection, sql } from "../config/db.js";
 import { generateId } from "../utils/generateId.js";
 
-const getAllTransactions = async ()=>{
+const getAllTransactions = async ({ searchBy, searchValue, page, limit })=>{
     const pool = await getConnection;
-    const result = await pool.request().query('SELECT * FROM StockTransaction');
-    return result.recordset;
+    const result = await pool.request()
+        .input('searchBy', sql.NVarChar, searchBy)
+        .input('searchValue', sql.NVarChar, searchValue)
+        .input('page', sql.Int, page)
+        .input('limit', sql.Int, limit)
+        .execute("GetStockTransactions");
+
+    return {
+        data: result.recordsets[0],
+        total: result.recordsets[1][0].total,
+        page,
+        limit
+    };
 }
 
 const getTransactionById = async (id) => {
@@ -30,7 +41,7 @@ const createTransaction = async ({ date, transactionType, quantityChange, descri
         .input("userName", sql.VarChar(25), userName)
         .input("companyId", sql.VarChar(25), companyId)
         .execute("CreateStockTransaction");
-    return result.recordset[0];
+    return {...result.recordset[0], id};
 };
 
 const updateTransaction = async (id, { date, transactionType, quantityChange, description, inventoryLocationIdOld, inventoryLocationIdNew, productName, userName, companyId }) => {

@@ -29,7 +29,7 @@ const createUserInfo = async ({ firstName, middleName, lastName, secondLastName,
         .input("idNumber", sql.BigInt, idNumber)
         .input("contactInfoId", sql.VarChar(25), contactInfoId)
         .execute("CreateUserInfo");
-    return result.recordset[0];
+    return {...result.recordset[0], id};
 };
 
 const updateUserInfo = async (id, { firstName, middleName, lastName, secondLastName, dateOfBirth, idType, idNumber, contactInfoId }) => {

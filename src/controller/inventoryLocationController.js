@@ -2,8 +2,8 @@ import { getAllInventoryLocations, getInventoryLocationById, createInventoryLoca
 
 const inventoryLocationList = async (req, res) => {
     try {
-        const { searchBy = '', searchValue = '', page = 1, limit = 10 } = req.query;
-        const locations = await getAllInventoryLocations({ searchBy, searchValue, page, limit });
+        const { searchBy = null, searchValue = null, page = 1, limit = 10 } = req.query;
+        const locations = await getAllInventoryLocations({ searchBy, searchValue, page: parseInt(page, 10), limit: parseInt(limit, 10) });
         res.status(200).json(locations);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -40,7 +40,7 @@ const addInventoryLocation = async (req, res) => {
 
         const response = await createInventoryLocation({ code, name, capacity, currentStock, isActive });
         if (response.Success === 1) {
-            res.status(200).json({ message: response.Message });
+            res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
         }

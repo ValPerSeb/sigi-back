@@ -3,33 +3,18 @@ import { generateId } from "../utils/generateId.js";
 
 const getAllProducts = async ({ searchBy, searchValue, page, limit })=>{
     const pool = await getConnection;
-    const offset = (page - 1) * limit;
-
-    let query = 'SELECT * FROM Product';
-    let countQuery = 'SELECT COUNT(*) AS total FROM Product';
-    const request = pool.request();
-
-    if (searchBy && searchValue) {
-        const allowedFields = ['ProductName', 'CategoryId'];
-        if (!allowedFields.includes(searchBy)) {
-            throw new Error('Campo de búsqueda no permitido');
-        }
-
-        query += ` WHERE ${searchBy} LIKE @searchValue`;
-        countQuery += ` WHERE ${searchBy} LIKE @searchValue`;
-        request.input('searchValue', sql.VarChar, `%${searchValue}%`);
-    }
-
-    query += ` ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`;
-
-    const result = await request.query(query);
-    const countResult = await request.query(countQuery);
+    const result = await pool.request()
+        .input('searchBy', sql.NVarChar, searchBy)
+        .input('searchValue', sql.NVarChar, searchValue)
+        .input('page', sql.Int, page)
+        .input('limit', sql.Int, limit)
+        .execute("GetProducts");
 
     return {
-        data: result.recordset,
-        total: countResult.recordset[0].total,
-        page: Number(page),
-        limit: Number(limit)
+        data: result.recordsets[0],
+        total: result.recordsets[1][0].total,
+        page,
+        limit
     };
 }
 
@@ -54,7 +39,7 @@ const createProduct = async ({ productName, unitPrice, stock, companyId, supplie
         .input("categoryId", sql.VarChar(25), categoryId)
         .input("inventoryLocationId", sql.VarChar(25), inventoryLocationId)
         .execute("CreateProduct");
-    return result.recordset[0];
+    return {...result.recordset[0], id};
 };
 
 const updateProduct = async (id, { productName, unitPrice, stock, companyId, supplierId, categoryId, inventoryLocationId }) => {
