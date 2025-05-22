@@ -11,6 +11,7 @@ import stockTransactionRoutes from './routes/stockTransactionRoutes.js';
 import supplierRoutes from './routes/SupplierRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/product', productRoutes);
 app.use('/stock-transaction', stockTransactionRoutes);
 app.use('/supplier', supplierRoutes);
 app.use('/user', userRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running in port: ${process.env.PORT}`);
