@@ -1292,7 +1292,6 @@ IF EXISTS (SELECT 1 FROM UserInfo WHERE Id = @id)
         UPDATE UserInfo
 	SET
 		UserName = @userName,
-		Password = @password,
 		Rol = @rol,
 		FirstName = @firstName,
 		MiddleName = @middleName,
@@ -1300,7 +1299,8 @@ IF EXISTS (SELECT 1 FROM UserInfo WHERE Id = @id)
 		SecondLastName = @secondLastName,
 		Email = @email,
 		PhoneNumber = @phoneNumber,
-		AddressId = @addressId
+		AddressId = @addressId,
+		Password = CASE WHEN @password IS NOT NULL THEN @password ELSE Password END
 
 	WHERE 
 		Id = @id

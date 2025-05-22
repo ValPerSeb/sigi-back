@@ -51,7 +51,6 @@ const editCategory = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, color } = req.body;
-        console.log(req.body)
         if (!id) {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }

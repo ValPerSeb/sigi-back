@@ -63,11 +63,17 @@ const editUser = async (req, res) => {
             return res.status(400).json({ message: "El Id es obligatorio" });
         }
 
-        if (!userName || !password || !rol || !firstName || !lastName || !addressId) {
+        if (!userName || !rol || !firstName || !lastName || !addressId) {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
-        const response = await updateUserInfo(id, { userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
+        let hashedPassword = null;
+        if (password) {
+            const salt = 10;
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const response = await updateUserInfo(id, { userName, password: hashedPassword, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId });
 
         if (response.Success === 1) {
             res.status(200).json({ message: response.Message });

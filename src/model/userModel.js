@@ -24,7 +24,7 @@ const getUserInfobyId = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM UserInfo WHERE Id = @id");
+        .query("SELECT u.*, a.* FROM UserInfo u INNER JOIN Address a ON u.AddressId = a.Id WHERE u.Id = @id"); 
     return result.recordset[0];
 };
 
@@ -58,10 +58,9 @@ const createUserInfo = async ({ userName, password, rol, firstName, middleName, 
 
 const updateUserInfo = async (id, { userName, password, rol, firstName, middleName, lastName, secondLastName, email, phoneNumber, addressId }) => {
     const pool = await getConnection;
-    const result = await pool.request()
+    const request = pool.request()
         .input("id", sql.VarChar(25), id)
         .input("userName", sql.VarChar(30), userName)
-        .input("password", sql.VarChar(100), password)
         .input("rol", sql.VarChar(20), rol)
         .input("firstName", sql.VarChar(30), firstName)
         .input("middleName", sql.VarChar(30), middleName)
@@ -69,8 +68,13 @@ const updateUserInfo = async (id, { userName, password, rol, firstName, middleNa
         .input("secondLastName", sql.VarChar(30), secondLastName)
         .input("email", sql.VarChar(50), email)
         .input("phoneNumber", sql.BigInt, phoneNumber)
-        .input("addressId", sql.VarChar(25), addressId)
-        .execute("UpdateUserInfo");
+        .input("addressId", sql.VarChar(25), addressId);
+
+    if (password !== null && password !== undefined) {
+        request.input("password", sql.VarChar(100), password);
+    }
+
+    const result = await request.execute("UpdateUserInfo");
     return result.recordset[0];
 };
 

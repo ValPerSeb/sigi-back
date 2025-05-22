@@ -1,4 +1,5 @@
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../model/productModel.js"
+import { createTransaction } from "../model/stockTransactionModel.js"
 
 const productList = async (req, res) => {
     try {
@@ -38,6 +39,19 @@ const addProduct = async (req, res) => {
         }
         const response = await createProduct({ productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId });
         if (response.Success === 1) {
+            const transaction = await createTransaction({
+                date: new Date(),
+                type: "INCREMENT",
+                quantity: stock,
+                description: `Ingreso de ${stock} unidades de ${productName}`,
+                inventoryLocationIdOld: null,
+                inventoryLocationIdNew: inventoryLocationId,
+                userId: req.user.userId,
+                productId: response.id
+            });
+            if (!transaction.Success === 1) {
+                console.error("Error creating transaction:", transaction.Message);
+            }
             res.status(200).json({ message: response.Message, id: response.id });
         } else {
             res.status(404).json({ error: response.Message });
@@ -60,9 +74,28 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ message: "Faltan campos obligatorios" });
         }
 
+        const currentProduct = await getProductById(id);
+        if (!currentProduct) {
+            return res.status(404).json({ message: "Producto no existe" });
+        }
+
         const response = await updateProduct(id, { productName, unitPrice, stock, supplierId, categoryId, inventoryLocationId });
 
         if (response.Success === 1) {
+            const type = currentProduct.Stock < stock ? "INCREMENT" : currentProduct.Stock > stock ? "DECREMENT" : "TRANSFER";
+            const transaction = await createTransaction({
+                date: new Date(),
+                type,
+                quantity: type === "TRANSFER" ? 0 : type === "INCREMENT" ? stock - currentProduct.Stock : currentProduct.Stock - stock,
+                description: type === "TRANSFER" ? `Cambio de ubicación de ${productName}` : type === "INCREMENT" ? `Ingreso de ${stock - currentProduct.Stock} unidades de ${productName}` : `Salida de ${currentProduct.Stock - stock} unidades de ${productName}`,
+                inventoryLocationIdOld: type === "TRANSFER" ? currentProduct.InventoryLocationId : null,
+                inventoryLocationIdNew: type === "TRANSFER" ? inventoryLocationId : null,
+                userId: req.user.userId,
+                productId: id
+            });
+            if (!transaction.Success === 1) {
+                console.error("Error creating transaction:", transaction.Message);
+            }
             res.status(200).json({ message: response.Message });
         } else {
             res.status(404).json({ error: response.Message });
@@ -84,6 +117,20 @@ const removeProduct = async (req, res) => {
 
         if (affectedRows === 0) {
             return res.status(404).json({ message: "Producto no existe" });
+        }
+
+        const transaction = await createTransaction({
+            date: new Date(),
+            type: "DECREMENT",
+            quantity: 0,
+            description: `Eliminación de producto`,
+            inventoryLocationIdOld: null,
+            inventoryLocationIdNew: null,
+            userId: req.user.userId,
+            productId: id
+        });
+        if (!transaction.Success === 1) {
+            console.error("Error creating transaction:", transaction.Message);
         }
 
         res.status(200).json({ message: "Eliminación existosa" });
