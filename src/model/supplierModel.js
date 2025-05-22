@@ -24,7 +24,7 @@ const getSupplierById = async (id) => {
     const pool = await getConnection;
     const result = await pool.request()
         .input("id", id)
-        .query("SELECT * FROM Supplier WHERE Id = @id");
+        .query("SELECT s.*, a.* FROM Supplier s INNER JOIN Address a ON s.AddressId = a.Id WHERE s.Id = @id");
     return result.recordset[0];
 };
 
